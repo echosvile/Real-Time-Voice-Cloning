@@ -10,6 +10,5 @@ tqdm
 sounddevice
 Unidecode
 inflect
-PyQt5
 multiprocess
 numba
