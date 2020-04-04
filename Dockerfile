@@ -1,12 +1,4 @@
-FROM pytorch/manylinux-cuda100
-
-
-# Update install a sound library
-RUN apt-get clean \
-        && apt-get update \
-        && apt-get install -y \
-        ffmpeg \
-        libportaudio2
+FROM pytorch/pytorch:1.4-cuda10.1-cudnn7-runtime
 
 # Create the folder structure for sagemaker
 RUN mkdir /opt/program \
@@ -27,9 +19,15 @@ COPY ./synthesizer /opt/program/synthesizer
 COPY ./utils /opt/program/utils
 COPY ./vocoder /opt/program/vocoder
 
+# Install a sound library
+RUN apt-get clean \
+        && apt-get update \
+        && apt-get install -y \
+        ffmpeg \
+        libportaudio2
+
 # Install dependencies
 WORKDIR /opt/program/
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["python", "demo_cli.py", "--no_sound"]
-#CMD ["nvcc", "--version"]
+ENTRYPOINT ["python", "demo_cli.py", "--no_sound"]
