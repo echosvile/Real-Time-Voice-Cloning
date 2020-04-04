@@ -1,5 +1,13 @@
 FROM pytorch/pytorch:1.4-cuda10.1-cudnn7-runtime
 
+RUN apt-get clean \
+        && apt-get update \
+        && apt-get install -y \
+        ffmpeg \
+        libportaudio2 \
+        nginx 
+
+# TODO: remove all this once local tests are finished 
 # Create the folder structure for sagemaker
 RUN mkdir /opt/program \
         && mkdir /opt/ml \
@@ -10,24 +18,30 @@ RUN mkdir /opt/program \
         && mkdir /opt/ml/code \
         && mkdir /opt/ml/output \
         && mkdir /opt/ml/failure
+
+# copy the model files
+RUN pip install gdown
+RUN gdown https://drive.google.com/uc?id=1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc
+RUN apt-get install -y zip unzip
+RUN unzip pretrained.zip -d /opt/ml/model
  
-# Copy our source files
-COPY *.py /opt/program/
-COPY *.txt /opt/program/
-COPY ./encoder /opt/program/encoder
-COPY ./synthesizer /opt/program/synthesizer
-COPY ./utils /opt/program/utils
-COPY ./vocoder /opt/program/vocoder
-
-# Install a sound library
-RUN apt-get clean \
-        && apt-get update \
-        && apt-get install -y \
-        ffmpeg \
-        libportaudio2
-
 # Install dependencies
 WORKDIR /opt/program/
+COPY *.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENTRYPOINT ["python", "demo_cli.py", "--no_sound"]
+# Copy our source files
+COPY *.py ./
+COPY nginx.conf ./
+COPY ./encoder ./encoder
+COPY ./synthesizer ./synthesizer
+COPY ./utils ./utils
+COPY ./vocoder ./vocoder
+
+#ENTRYPOINT ["python", "demo_cli.py", \
+#            "--no_sound", \
+#            "-e", "/opt/ml/model/encoder/saved_models/pretrained.pt", \
+#            "-s", "/opt/ml/model/synthesizer/saved_models/logs-pretrained/", \
+#            "-v", "/opt/ml/model/vocoder/saved_models/pretrained/pretrained.pt"]
+
+ENTRYPOINT ["python", "service_wrapper.py"]

@@ -12,3 +12,7 @@ Unidecode
 inflect
 multiprocess
 numba
+flask
+gunicorn
+gevent
+boto3
