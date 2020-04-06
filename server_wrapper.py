@@ -26,9 +26,8 @@ def sigterm_handler(nginx_pid, gunicorn_pid):
 
     sys.exit(0)
 
-def start_server():
+def start_server(arg=None):
     print('Starting the inference server with {} workers.'.format(model_server_workers))
-
 
     # link the log streams to stdout/err so they will be logged to the container logs
     subprocess.check_call(['ln', '-sf', '/dev/stdout', '/var/log/nginx/access.log'])
@@ -57,5 +56,4 @@ def start_server():
 # The main routine just invokes the start function.
 
 if __name__ == '__main__':
-    if sys.argv[1] == 'serve':
-        start_server()
+    start_server(sys.argv[1])

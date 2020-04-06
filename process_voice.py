@@ -29,18 +29,11 @@ def ping():
     return flask.Response(response='\n', status=200, mimetype='application/json')
 
 
-@app.route('/invoke', methods=['POST'])
+@app.route('/invocations', methods=['POST'])
 def transformation():
-    return flask.Response(response='\n', status=200, mimetype='application/json')
-"""
-    if flask.request.content_type == 'application/json':
-        data = flask.request.data.decode('utf-8')
-        app.logger.info("app logger...")
-        print("printing stuff...")
-        # TODO: more stuff...
-        #print(str(encoder))
-    else:
+    if flask.request.content_type != 'application/json':
         return flask.Response(response='Input should be application/json', status=415, mimetype='text/plain')
 
+    data = flask.request.data.decode('utf-8')
+    app.logger.warn("testing logger message...")
     return flask.Response(response='\n', status=200, mimetype='application/json')
-"""

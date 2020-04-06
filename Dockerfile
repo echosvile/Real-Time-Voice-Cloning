@@ -38,10 +38,4 @@ COPY ./synthesizer ./synthesizer
 COPY ./utils ./utils
 COPY ./vocoder ./vocoder
 
-#ENTRYPOINT ["python", "demo_cli.py", \
-#            "--no_sound", \
-#            "-e", "/opt/ml/model/encoder/saved_models/pretrained.pt", \
-#            "-s", "/opt/ml/model/synthesizer/saved_models/logs-pretrained/", \
-#            "-v", "/opt/ml/model/vocoder/saved_models/pretrained/pretrained.pt"]
-
-ENTRYPOINT ["python", "service_wrapper.py"]
+ENTRYPOINT ["python", "server_wrapper.py"]
