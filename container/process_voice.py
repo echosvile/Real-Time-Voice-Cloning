@@ -36,4 +36,4 @@ def transformation():
 
     data = flask.request.data.decode('utf-8')
     app.logger.warn("testing logger message...")
-    return flask.Response(response='\n', status=200, mimetype='application/json')
+    return flask.Response(response='Hello from sagemaker!', status=200, mimetype='application/json')
