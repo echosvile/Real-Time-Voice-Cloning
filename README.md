@@ -7,11 +7,11 @@ To solve this, we can clone voices in the cloud using Amazon SageMaker. We won't
 ## Prerequisites
 
 * An AWS account. We will be using resources that aren't available with free tier, i.e. P2 instances.
-* A python installation with boto3. This is only needed if you want to run the sample notebook locally. You could also just do everything from a SageMaker notebook. That will be more expensive however.
+* A python installation with boto3. This is only needed if you want to run the sample notebook locally. You could also just do everything from a SageMaker notebook. But that would make this more expensive.
 
 ## Costs
 
-Yes, AWS costs money. With this project though, running the example should cost you maybe $1 or $2 at most. If you make your voice clone read an entire novel or all of Wikipedia, that might be different story. In any case, it uses the following resources:
+Yes, AWS costs money. With this project though, running the example should cost you maybe $1 or $2 at most. If you want your voice clone read an entire novel or all of Wikipedia, that might be different story. In any case, it uses the following resources:
  
 * *A SageMaker notebook instance* - This is only needed for installation / setup. Assuming this takes a full hour (which it shouldn't), you'll spend $0.0464 as of this writing.
 * *S3 storage* - The model files, utterance files and results generated are less a GB. So this will only cost you a few pennies per month. 
@@ -59,4 +59,4 @@ Downloading: vader_two_cities_1.wav
 Downloading: vader_two_cities_2.wav
 ```
 
-7. Running locally. If everything is working at this point, you can stop or even delete your SageMaker notebook. Assuming you have the AWS CLI installed and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html), you can now run the sample notebook locally. The only python dependencies are boto3 and sagemaker. The batch processing job will still run in the cloud though.
+7. Running locally. If everything is working at this point, you can stop or even delete your SageMaker notebook. Assuming you have the AWS CLI installed and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html), you can now run the sample notebook locally. The only python dependencies are boto3 and sagemaker. The batch processing job will still run in the cloud regardless.
