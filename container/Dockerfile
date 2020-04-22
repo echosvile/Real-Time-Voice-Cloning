@@ -7,25 +7,8 @@ RUN apt-get clean \
         libportaudio2 \
         nginx 
 
-# TODO: remove all this once local tests are finished 
-# Create the folder structure for sagemaker
-RUN mkdir /opt/program \
-        && mkdir /opt/ml \
-        && mkdir /opt/ml/input \
-        && mkdir /opt/ml/input/config \
-        && mkdir /opt/ml/input/data \
-        && mkdir /opt/ml/model \
-        && mkdir /opt/ml/code \
-        && mkdir /opt/ml/output \
-        && mkdir /opt/ml/failure
-
-# copy the model files
-RUN pip install gdown
-RUN gdown https://drive.google.com/uc?id=1n1sPXvT34yXFLT47QZA6FIRGrwMeSsZc
-RUN apt-get install -y zip unzip
-RUN unzip pretrained.zip -d /opt/ml/model
- 
 # Install dependencies
+RUN mkdir /opt/program 
 WORKDIR /opt/program/
 COPY *.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
