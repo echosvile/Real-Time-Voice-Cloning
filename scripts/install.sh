@@ -1,8 +1,8 @@
 # Run this from either 1) a SageMaker notebook instance or 2) an AWS CLI with python and docker installed.
 
 # Add your AWS resource names here: 
-bucket_name=
-ecr_repository_name=
+bucket_name=real-time-voice-cloning
+ecr_repository_name=real-time-voice-cloning
 
 
 if [ -z $bucket_name ] || [ -z $ecr_repository_name ] 
