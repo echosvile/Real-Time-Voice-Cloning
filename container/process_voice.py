@@ -12,12 +12,10 @@ import torch
 import boto3
 import os
 import glob
-import warnings
+import datetime as dt
 
 
 app = flask.Flask(__name__)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Ok to hard code these locations
 encoder_model_path = '/opt/ml/model/encoder/saved_models/pretrained.pt'
@@ -32,6 +30,7 @@ vocoder.load_model(Path(vocoder_model_path))
 
 def clone_voice(sentence, results_file):
     """Adapted from 'demo_cli.py'"""
+    
     u_path = Path('utterance.wav')
     results_path = Path(results_file)
     
@@ -57,6 +56,19 @@ def transformation():
     if flask.request.content_type != 'application/json':
         return flask.Response(response='Input should be application/json', status=415, mimetype='text/plain')
 
+    # Check for a GPU
+    try:
+        if torch.cuda.is_available():
+            device_id = torch.cuda.current_device()
+            gpu_properties = torch.cuda.get_device_properties(device_id)
+            app.logger.warn('!!!!! GPU found !!!!!')
+        else:
+            app.logger.warn('!!!!! No GPU found !!!!!')
+        
+    except Exception as e:
+        app.logger.warn('!!!!! No GPU found !!!!!')
+        logger.warn(e)
+    
     data = flask.request.get_json()
     app.logger.warn(f'Starting request: {data["request_id"]}...')
     
@@ -65,7 +77,7 @@ def transformation():
         
         for job in data['jobs']:
             job_id = job['job_id']
-            app.logger.info(f'Starting job: f{job_id}...')
+            app.logger.warn(f'Starting job: {job_id}...')
             
             # Download the utterance file
             s3.download_file(job['bucket'], job['utterance_file'], 'utterance.wav')
@@ -73,9 +85,16 @@ def transformation():
             idx = 0
             for sentence in job['sentences']:
                 # Generate and upload a .wav file for each sentence in the job
-                app.logger.info(f'Processing sentence {idx} of job {job_id}...')
+                app.logger.warn(f'Processing sentence {idx} of job {job_id}...')
+                app.logger.warn(sentence)
                 results_file = f'{job_id}_{idx}.wav'
-                clone_voice(sentence, results_file)
+                
+                start = dt.datetime.now()
+                clone_voice(sentence,results_file)
+                end = dt.datetime.now()
+                
+                app.logger.warn(f'Processed! Elapsed time: {end - start}')
+
                 s3.upload_file(results_file, job['bucket'], results_file)
                 idx += 1
             
