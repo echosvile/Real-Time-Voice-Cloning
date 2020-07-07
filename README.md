@@ -1,8 +1,8 @@
 # Real-Time Voice Cloning
 
-This fork is for anyone who had trouble getting Corentin Jemine's original [project](https://github.com/CorentinJ/Real-Time-Voice-Cloning) up and running. Maybe you don't have a GPU machine. Maybe your CUDA drivers aren't configured. Or maybe one of a dozen other things went wrong.
+This fork is for anyone who had trouble getting Corentin Jemine's original [project](https://github.com/CorentinJ/Real-Time-Voice-Cloning) up and running. Since it now has CPU support, much of the installation pain is resolved. Still, you might find this useful if you would like to generate many voice files.
 
-To solve this, we can clone voices in the cloud using Amazon SageMaker. We won't implement the toolbox so there are no fancy visualizations and no GUI. But you will be able to get the functionality of `demo_cli.py` with minimal setup.
+With this repo, you can clone voices in the cloud using Amazon SageMaker. We won't implement the toolbox so there are no fancy visualizations and no GUI. But you will be able to get the functionality of `demo_cli.py` with minimal setup.
 
 ## Prerequisites
 
@@ -11,12 +11,14 @@ To solve this, we can clone voices in the cloud using Amazon SageMaker. We won't
 
 ## Costs
 
-Yes, AWS costs money. With this project though, running the example should cost you maybe $1 or $2 at most. If you want your voice clone read an entire novel or all of Wikipedia, that might be different story. In any case, it uses the following resources:
+Yes, AWS costs money. With this project though, running the example should cost you less than $1. If you want your voice clone read an entire novel or all of Wikipedia, that might be different story. In any case, it uses the following resources:
  
 * *A SageMaker notebook instance* - This is only needed for installation / setup. Assuming this takes a full hour (which it shouldn't), you'll spend $0.0464 as of this writing.
 * *S3 storage* - The model files, utterance files and results generated are less a GB. So this will only cost you a few pennies per month. 
 * *ECR storage* - The container this creates will be ~3GB. So that's $0.30 per month.
-* *Batch processing* - This is the big one. GPU instances (ml.p2.xlarge) are expensive, $1.26 per hour for batch transform jobs. Running the example takes ~9 or 10 minutes. So that's 10 / 60 * 1.26 = $0.21.
+* *Batch processing* - This is potentially expensive if you plan to run large jobs. The provided example should only take ~11 minutes. Using a CPU instance (ml.m5.large) at $0.134 per hour that comes to 11 / 60 * 0.134 = $0.02
+
+I might experiment with different instance types in the future. For a large enough job, it might be more economical to use bigger or even GPU instances. But since about half of that 11 minutes is spent starting the container, it wouldn't help with the example notebook.
 
 ## Instructions
 
@@ -60,3 +62,7 @@ Downloading: vader_two_cities_2.wav
 ```
 
 7. Running locally. If everything is working at this point, you can stop or even delete your SageMaker notebook. Assuming you have the AWS CLI installed and [configured](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html), you can now run the sample notebook locally. The only python dependencies are boto3 and sagemaker. The batch processing job will still run in the cloud regardless.
+
+## Model Training with SageMaker
+
+I will get to this in the near future. It should be pretty straightforward to implement. But as of now this fork only has the functionality of `demo_cli.py`. In the mean time, you can check out [this](https://github.com/CorentinJ/Real-Time-Voice-Cloning/issues/400) issue for a list of pretrained models.
